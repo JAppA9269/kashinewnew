@@ -1,8 +1,51 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { FiHeart, FiShoppingCart, FiBell, FiSearch, FiChevronDown } from 'react-icons/fi';
+import { useUser } from '../UserContext.jsx';
+import { supabase } from '../components/auth/supabaseClient';
+import { Link, useNavigate } from 'react-router-dom';
 
-const AuthNavbar = ({ user, onLogout }) => {
+const AuthNavbar = () => {
   const [open, setOpen] = useState(false);
+  const [profilePhoto, setProfilePhoto] = useState('');
+  const { user } = useUser();
+  const navigate = useNavigate();
+  const dropdownRef = useRef(null);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate('/login');
+  };
+
+  // Fetch user profile photo from Supabase users table
+  useEffect(() => {
+    const fetchPhoto = async () => {
+      if (!user?.id) return;
+      const { data, error } = await supabase
+        .from('users')
+        .select('photo')
+        .eq('id', user.id)
+        .single();
+
+      if (!error && data?.photo) {
+        setProfilePhoto(data.photo);
+      } else {
+        setProfilePhoto(`https://api.dicebear.com/6.x/thumbs/svg?seed=${user.email}`);
+      }
+    };
+
+    fetchPhoto();
+  }, [user]);
+
+  // 🔐 close dropdown if clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const styles = {
     navbar: {
@@ -21,7 +64,7 @@ const AuthNavbar = ({ user, onLogout }) => {
       fontWeight: 'bold',
       color: '#f97316',
       textDecoration: 'none',
-      marginLeft:"40px"
+      marginLeft: '40px',
     },
     centerSection: {
       display: 'flex',
@@ -110,50 +153,39 @@ const AuthNavbar = ({ user, onLogout }) => {
     },
   };
 
-  const photoUrl =
-    user?.user_metadata?.avatar_url ||
-    `https://api.dicebear.com/6.x/thumbs/svg?seed=${user?.email}`;
-
   return (
     <div style={styles.navbar}>
-      {/* Logo */}
-      <a href="/" style={styles.logo}>Kashi</a>
+      <Link to="/" style={styles.logo}>Kashi</Link>
 
-      {/* Center Section */}
       <div style={styles.centerSection}>
-        {/* Search Bar */}
         <div style={styles.searchBar}>
           <FiSearch />
           <input type="text" placeholder="Search for products..." style={styles.searchInput} />
         </div>
 
-        {/* Sell Button */}
-        <a href="/sell" style={styles.sellButton}>
+        <Link to="/sell" style={styles.sellButton}>
           Sell an Item
-        </a>
+        </Link>
       </div>
 
-      {/* Right Icons + Avatar */}
       <div style={styles.rightSection}>
         <FiHeart style={styles.iconBtn} title="Wishlist" />
         <FiShoppingCart style={styles.iconBtn} title="Cart" />
         <FiBell style={styles.iconBtn} title="Notifications" />
 
-        {/* Avatar with dropdown */}
         <div
           style={styles.avatarContainer}
           onClick={() => setOpen(!open)}
-          onBlur={() => setOpen(false)}
-          tabIndex={0}
+          ref={dropdownRef}
         >
-          <img src={photoUrl} alt="avatar" style={styles.avatar} />
+          <img src={profilePhoto} alt="avatar" style={styles.avatar} />
           <FiChevronDown style={{ color: '#f97316' }} />
           {open && (
             <div style={styles.dropdown}>
-              <a href="/profile" style={styles.dropdownItem}>👤 Profile</a>
-              <a href="/settings" style={styles.dropdownItem}>⚙️ Settings</a>
+              <Link to="/profile" style={styles.dropdownItem}>👤 Profile</Link>
+              <Link to="/settings" style={styles.dropdownItem}>⚙️ Settings</Link>
               <div
-                onClick={onLogout}
+                onClick={handleLogout}
                 style={{ ...styles.dropdownItem, ...styles.logout, cursor: 'pointer' }}
               >
                 🚪 Logout

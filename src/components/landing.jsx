@@ -279,24 +279,53 @@ export default function LandingPage() {
       </div>
 
       <div style={styles.testimonialSection}>
-        <h2 style={styles.testimonialTitle}>What Our Users Say</h2>
-        <div style={styles.testimonialGrid}>
-          {currentTestimonials.map((t, index) => (
-            <div key={index} style={styles.testimonialCard}>
-              <img src={t.image} alt={t.author} style={styles.image} />
-              <p>"{t.quote}"</p>
-              <strong>- {t.author}</strong>
-            </div>
-          ))}
-          {Array.from({ length: fillerCount }).map((_, i) => (
-            <div key={`filler-${i}`} style={{ ...styles.testimonialCard, visibility: 'hidden' }} />
-          ))}
+  <h2 style={styles.testimonialTitle}>What Our Users Say</h2>
+  <div style={{ position: "relative", width: "100%", maxWidth: "1200px" }}>
+    {/* Left arrow */}
+    <button
+      onClick={handlePrev}
+      style={{
+        ...styles.arrowBtn,
+        position: "absolute",
+        left: "-60px",
+        top: "50%",
+        transform: "translateY(-50%)",
+      }}
+    >
+      ‹
+    </button>
+
+    {/* Testimonials */}
+    <div style={{ ...styles.testimonialGrid, justifyContent: "center" }}>
+      {currentTestimonials.map((t, index) => (
+        <div key={index} style={styles.testimonialCard}>
+          <img src={t.image} alt={t.author} style={styles.image} />
+          <p>"{t.quote}"</p>
+          <strong>- {t.author}</strong>
         </div>
-        <div style={styles.arrows}>
-          <button onClick={handlePrev} style={styles.arrowBtn}>‹ Prev</button>
-          <button onClick={handleNext} style={styles.arrowBtn}>Next ›</button>
-        </div>
-      </div>
+      ))}
+      {Array.from({ length: fillerCount }).map((_, i) => (
+        <div key={`filler-${i}`} style={{ ...styles.testimonialCard, visibility: 'hidden' }} />
+      ))}
+    </div>
+
+    {/* Right arrow */}
+    <button
+      onClick={handleNext}
+      style={{
+        ...styles.arrowBtn,
+        position: "absolute",
+        right: "-60px",
+        top: "50%",
+        transform: "translateY(-50%)",
+      }}
+    >
+      ›
+    </button>
+  </div>
+</div>
+
+
 
       <div style={styles.faqSection}>
         <h2 style={styles.faqTitle}>Frequently Asked Questions</h2>

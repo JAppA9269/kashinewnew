@@ -1,9 +1,56 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { supabase } from './supabaseClient'; // ✅ Ensure correct path
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { useNavigate } from 'react-router-dom';
+import { useUser } from '../../UserContext'; // ✅ Make sure this path is correct
 
 const Login = () => {
+  const { user } = useUser(); // ✅ Get user from context
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+
+  // ✅ Redirect to /main if already logged in
+  useEffect(() => {
+    if (user) {
+      navigate('/main');
+    }
+  }, [user]);
+
+  const handleLogin = async () => {
+    setError('');
+    setSuccess('');
+
+    if (!email || !password) {
+      setError('Please enter both email and password.');
+      return;
+    }
+
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        console.error('Login error:', error.message);
+        setError(error.message);
+        return;
+      }
+
+      // ✅ Let useEffect redirect on auth state change
+      setSuccess('Logged in successfully!');
+    } catch (err) {
+      console.error('Unexpected login error:', err);
+      setError('Something went wrong. Please try again.');
+    }
+  };
 
   const styles = {
     container: {
@@ -31,15 +78,33 @@ const Login = () => {
       marginBottom: '1rem',
       color: '#f97316',
     },
+    inputContainer: {
+      position: 'relative',
+      width: '100%',
+      margin: '0.75rem 0',
+    },
     input: {
       width: '100%',
-      padding: '0.9rem 1rem',
-      margin: '0.75rem 0',
+      padding: '0.85rem 1.25rem',
+      paddingRight: '3rem',
       borderRadius: '999px',
       border: '1px solid #ddd',
       fontSize: '1rem',
       outline: 'none',
       transition: 'border 0.2s',
+      lineHeight: '1.5',
+      boxSizing: 'border-box',
+    },
+    eyeButton: {
+      position: 'absolute',
+      top: '50%',
+      right: '1rem',
+      transform: 'translateY(-50%)',
+      background: 'none',
+      border: 'none',
+      cursor: 'pointer',
+      fontSize: '1.2rem',
+      color: '#888',
     },
     checkboxContainer: {
       display: 'flex',
@@ -99,26 +164,50 @@ const Login = () => {
       height: '18px',
       fill: 'white',
     },
+    error: {
+      color: '#dc2626',
+      fontSize: '0.9rem',
+      marginTop: '0.5rem',
+    },
+    success: {
+      color: '#22c55e',
+      fontSize: '0.9rem',
+      marginTop: '0.5rem',
+    },
   };
 
   return (
     <div style={styles.container}>
       <div style={styles.card}>
         <h2 style={styles.title}>Login to Kashi</h2>
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          style={styles.input}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          style={styles.input}
-        />
+
+        <div style={styles.inputContainer}>
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            style={styles.input}
+          />
+        </div>
+
+        <div style={styles.inputContainer}>
+          <input
+            type={showPassword ? 'text' : 'password'}
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            style={styles.input}
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            style={styles.eyeButton}
+            aria-label="Toggle password visibility"
+          >
+            <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+          </button>
+        </div>
 
         <div style={styles.checkboxContainer}>
           <input
@@ -131,8 +220,12 @@ const Login = () => {
           <label htmlFor="rememberMe">Remember me</label>
         </div>
 
+        {error && <div style={styles.error}>{error}</div>}
+        {success && <div style={styles.success}>{success}</div>}
+
         <button
           style={styles.button}
+          onClick={handleLogin}
           onMouseOver={(e) => (e.currentTarget.style.backgroundColor = '#ea580c')}
           onMouseOut={(e) => (e.currentTarget.style.backgroundColor = '#f97316')}
         >
@@ -150,7 +243,6 @@ const Login = () => {
           Don't have an account?
           <a href="/signup" style={styles.link}>Sign up</a>
         </div>
-        
       </div>
     </div>
   );

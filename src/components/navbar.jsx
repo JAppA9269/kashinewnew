@@ -1,6 +1,10 @@
 import React from 'react';
+import { useUser } from '../UserContext.jsx'; // make sure path is correct
+import { supabase } from '../components/auth/supabaseClient'; // adjust if needed
 
 const Navbar = () => {
+  const { user } = useUser();
+
   const styles = {
     navbar: {
       backgroundColor: '#fff',
@@ -46,6 +50,12 @@ const Navbar = () => {
       transform: 'scale(1)',
       backgroundColor: 'transparent',
     },
+    email: {
+      marginRight: '1rem',
+      fontSize: '0.9rem',
+      color: '#333',
+      fontWeight: '500',
+    },
   };
 
   const handleLinkHover = (e) => {
@@ -70,6 +80,10 @@ const Navbar = () => {
     e.currentTarget.style.transform = 'scale(1)';
   };
 
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+  };
+
   return (
     <div style={styles.navbar}>
       <a href="/" style={styles.logo}>Kashi</a>
@@ -86,14 +100,29 @@ const Navbar = () => {
           </a>
         ))}
       </div>
-      <a
-        href="/Login"
-        style={styles.button}
-        onMouseEnter={handleButtonHover}
-        onMouseLeave={handleButtonLeave}
-      >
-        Connexion
-      </a>
+
+      {user ? (
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <span style={styles.email}>{user.email}</span>
+          <button
+            style={styles.button}
+            onClick={handleLogout}
+            onMouseEnter={handleButtonHover}
+            onMouseLeave={handleButtonLeave}
+          >
+            Logout
+          </button>
+        </div>
+      ) : (
+        <a
+          href="/login"
+          style={styles.button}
+          onMouseEnter={handleButtonHover}
+          onMouseLeave={handleButtonLeave}
+        >
+          Connexion
+        </a>
+      )}
     </div>
   );
 };
