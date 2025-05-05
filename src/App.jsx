@@ -5,9 +5,12 @@ import Navbar from './components/navbar';
 import AuthNavbar from './components/authnavbar';
 import Signup from './components/auth/signup';
 import Login from './components/auth/login';
-import Mainpage from './components/mainpage';
+import Main from './components/main';
 import Profile from './components/profile';
-import Sell from './components/sell'; // ✅ Added Sell page
+import Sell from './components/sell';
+import ParentComponent from './components/ParentComponent';
+import ProductPage from './components/ProductPage';
+import PublicProfile from './components/PublicProfile'; // ✅ NEW
 import { useUser } from './UserContext';
 import { supabase } from './components/auth/supabaseClient';
 
@@ -16,14 +19,11 @@ function App() {
 
   return (
     <Router>
-      {/* ✅ Show the correct navbar */}
       {user ? <AuthNavbar /> : <Navbar />}
 
       <Routes>
-        {/* Public route */}
         <Route path="/" element={<LandingPage />} />
 
-        {/* Redirect logged-in users away from signup/login */}
         <Route
           path="/signup"
           element={
@@ -50,21 +50,19 @@ function App() {
           }
         />
 
-        {/* Protected main page */}
         <Route
           path="/main"
           element={
             loading ? (
               <div style={{ padding: '2rem', textAlign: 'center' }}>Loading...</div>
             ) : user ? (
-              <Mainpage />
+              <Main />
             ) : (
               <Navigate to="/login" replace />
             )
           }
         />
 
-        {/* Protected profile page */}
         <Route
           path="/profile"
           element={
@@ -78,7 +76,6 @@ function App() {
           }
         />
 
-        {/* ✅ Protected sell page */}
         <Route
           path="/sell"
           element={
@@ -91,6 +88,10 @@ function App() {
             )
           }
         />
+
+        <Route path="/product/:id" element={<ProductPage />} />
+        <Route path="/profile/:username" element={<PublicProfile />} /> {/* ✅ NEW */}
+        <Route path="/test-editor" element={<ParentComponent />} />
       </Routes>
 
       <Footer />

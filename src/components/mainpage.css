@@ -1,0 +1,180 @@
+/* components/mainpage.css */
+
+.mainpage-container {
+  padding: 1.5rem; /* Adjust padding */
+  max-width: 1200px;
+  margin: auto;
+  background-color: #fefcf9; /* Match landing page maybe? */
+}
+
+.filter-bar {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem; /* Increased spacing */
+  flex-wrap: wrap;
+  padding-bottom: 1rem; /* Add space below filters */
+  border-bottom: 1px solid #eee; /* Visual separation */
+}
+
+.filter-bar select {
+  padding: 0.6rem 0.8rem; /* Adjust padding */
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 0.95rem; /* Adjust font size */
+  background-color: white; /* Ensure background */
+  cursor: pointer;
+}
+
+/* Consider styling select dropdown arrows */
+.filter-bar select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); /* Keep responsive columns */
+  gap: 1.5rem; /* Adjust gap */
+}
+
+.product-card-link {
+  text-decoration: none;
+  color: inherit;
+  display: block; /* Ensure link takes up block space for hover */
+}
+
+.product-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08); /* Softer shadow */
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease; /* Smooth transition */
+  height: 100%; /* Make cards in a row equal height if needed */
+}
+
+/* --- MODIFIED: Hover effect --- */
+.product-card:hover {
+  transform: translateY(-5px); /* Lift effect */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12); /* Stronger shadow on hover */
+}
+
+/* --- NEW: Image Container for aspect ratio --- */
+.product-image-container {
+  width: 100%;
+  aspect-ratio: 1 / 1; /* Makes it square, adjust as needed (e.g., 3 / 4) */
+  overflow: hidden; /* Crucial for object-fit */
+  background-color: #f0f0f0; /* Placeholder bg */
+}
+
+/* --- MODIFIED: Image styling --- */
+.product-image {
+  display: block; /* Remove extra space below image */
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Cover the container, cropping if necessary */
+  /* Remove fixed height from previous CSS if it existed */
+}
+
+.product-info {
+  padding: 0.8rem; /* Adjust padding */
+  display: flex;
+  flex-direction: column; /* Stack info vertically */
+  gap: 0.3rem; /* Space between text elements */
+  flex-grow: 1; /* Allow info to take remaining space */
+}
+
+/* --- NEW: Title Styling --- */
+.product-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 0.2rem 0; /* Adjust margin */
+  white-space: nowrap; /* Prevent wrapping */
+  overflow: hidden; /* Hide overflow */
+  text-overflow: ellipsis; /* Add ellipsis (...) */
+}
+
+/* Container for brand/size and price */
+.product-sub-info {
+  display: flex;
+  justify-content: space-between; /* Puts price on the right */
+  align-items: center; /* Align items vertically */
+  font-size: 0.9rem; /* Base size */
+}
+
+
+.brand-size {
+  font-weight: 400; /* Normal weight */
+  color: #666; /* Grey color */
+  /* Allow wrapping if needed */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 0.5rem; /* Space before price */
+}
+
+.price {
+  font-weight: 700; /* Bolder price */
+  color: #228b22; /* ForestGreen, or use your theme color e.g. #f97316 */
+  font-size: 0.95rem; /* Slightly larger price */
+  white-space: nowrap; /* Prevent price wrapping */
+}
+
+.product-seller {
+  font-size: 0.8rem;
+  color: #888;
+  margin-top: 0.4rem;
+}
+
+.no-products-message {
+  grid-column: 1 / -1; /* Span across all grid columns */
+  text-align: center;
+  color: #777;
+  padding: 2rem;
+}
+
+
+/* --- NEW: Skeleton Loading Styles --- */
+.skeleton-card {
+  box-shadow: none; /* No shadow on skeletons */
+  cursor: default;
+}
+
+.skeleton {
+  background-color: #e0e0e0;
+  border-radius: 4px;
+  animation: skeleton-loading 1.5s infinite ease-in-out;
+}
+
+@keyframes skeleton-loading {
+  0% { background-color: #e0e0e0; }
+  50% { background-color: #f0f0f0; }
+  100% { background-color: #e0e0e0; }
+}
+
+.skeleton-image {
+  width: 100%;
+  aspect-ratio: 1 / 1; /* Match image container */
+  border-bottom-left-radius: 0; /* Remove radius if needed */
+  border-bottom-right-radius: 0;
+}
+
+.skeleton-card .product-info {
+  padding: 0.8rem;
+}
+
+.skeleton-text {
+  height: 1em; /* Height based on font size */
+  margin-bottom: 0.5em; /* Spacing */
+}
+
+.skeleton-text-short { width: 40%; }
+.skeleton-text-medium { width: 60%; }
+.skeleton-text-long { width: 85%; }
+/* Remove bottom margin from last skeleton text */
+.skeleton-card .product-info .skeleton-text:last-child {
+  margin-bottom: 0;
+}

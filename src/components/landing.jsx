@@ -239,7 +239,7 @@ export default function LandingPage() {
           support sustainability, and join a stylish community built for modern fashion lovers.
         </p>
         <a
-          href="/home"
+          href="/main"
           style={styles.button}
           onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#ea580c")}
           onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#f97316")}

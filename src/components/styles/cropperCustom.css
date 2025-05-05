@@ -1,0 +1,53 @@
+/* Clean crop box border */
+.cropper-crop-box {
+    border: 2px solid white !important;
+    box-shadow: none !important;
+  }
+  
+  /* Remove blue view box */
+  .cropper-view-box {
+    border: none !important;
+    outline: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+  
+  /* Show 3x3 grid lines - always visible and white */
+  .cropper-line {
+    background-color: white !important;
+    opacity: 1 !important;
+    width: 1px !important;
+  }
+  
+  /* Fix for grid not rendering due to line thickness */
+  .cropper-line.line-h {
+    height: 1px !important;
+  }
+  
+  .cropper-line.line-v {
+    width: 1px !important;
+  }
+  
+  /* Hide dashed borders */
+  .cropper-dashed {
+    display: none !important;
+  }
+  
+  /* Small, clean corner handles */
+  .cropper-point {
+    width: 8px !important;
+    height: 8px !important;
+    background-color: white !important;
+    border: 1px solid black !important;
+    border-radius: 50% !important;
+    opacity: 1 !important;
+  }
+  
+  /* Hide mid-side handles */
+  .cropper-point.point-n,
+  .cropper-point.point-e,
+  .cropper-point.point-s,
+  .cropper-point.point-w {
+    display: none !important;
+  }
+  
